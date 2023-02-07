@@ -43,10 +43,13 @@ LINK_SPAM_PHRASES = {
     'here finally',
     'here is what happened',
     'last fight',
+    'full clip',
     'here is the full video',
     'link to the clip thats going viral',
     'link to the clip explains the solution to bots',
-    'link to the clip part 2'
+    'link to the clip part 2',
+    'here is the recommended clip',
+    'full recommended clip'
 }
 LINK_SPAM_DOMAINS = {'youtu.be', 'youtube.com'}
 notSpecial = " *.:!'’[]"
