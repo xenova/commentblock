@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./popup.css">
+
+
+    <script src="popup.js" defer></script>
+
+    <script src="../scripts/labels.js"></script>
+    <script src="../scripts/storage.js"></script>
+    <script src="../scripts/defaults.js"></script>
+</head>
+
+<body>
+
+
+    <div class="main-container">
+        <div class="heading">
+            <h1>CommentBlock</h1>
+            <h5>(v0.0.1)</h5>
+        </div>
+
+        <h2>Categories</h2>
+
+        <div class="categories-container">
+            <!-- SCAM -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-scam" name="rules-enabled-scam" setting>
+                    <label for="rules-enabled-scam">SCAM</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-scam-names" name="rules-scam-names" setting>
+                                <label for="rules-scam-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLICIT -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-explicit" name="rules-enabled-explicit" setting>
+                    <label for="rules-enabled-explicit">EXPLICIT</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-explicit-names" name="rules-explicit-names" setting>
+                                <label for="rules-explicit-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LINKS (LINK_ONLY, LINK_SPAM, LINK_CONTAINS) -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-links" name="rules-enabled-links" setting>
+                    <label for="rules-enabled-links">LINKS</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-links-spam" name="rules-links-spam" setting>
+                                <label for="rules-links-spam">Link spam</label>
+                            </div>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-links-contains" name="rules-links-contains" setting>
+                                <label for="rules-links-contains">Contains link</label>
+                            </div>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-links-only" name="rules-links-only" setting>
+                                <label for="rules-links-only">Only a link</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELF_PROMO -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-selfpromo" name="rules-enabled-selfpromo" setting>
+                    <label for="rules-enabled-selfpromo">SELF PROMO</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-selfpromo-names" name="rules-selfpromo-names" setting>
+                                <label for="rules-selfpromo-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OTHER_PROMO -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-otherpromo" name="rules-enabled-otherpromo" setting>
+                    <label for="rules-enabled-otherpromo">OTHER PROMO</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-otherpromo-names" name="rules-otherpromo-names"
+                                    setting>
+                                <label for="rules-otherpromo-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SPONSOR -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-sponsor" name="rules-enabled-sponsor" setting>
+                    <label for="rules-enabled-sponsor">SPONSOR</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-sponsor-names" name="rules-sponsor-names" setting>
+                                <label for="rules-sponsor-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OTHER_SPAM -->
+            <div class="accordion">
+                <div class="top center-vertical">
+                    <input type="checkbox" id="rules-enabled-spam" name="rules-enabled-spam" setting>
+                    <label for="rules-enabled-spam">OTHER SPAM</label>
+                </div>
+                <div class="panel">
+                    <div class="inner-panel">
+                        <fieldset>
+                            <legend>Options</legend>
+                            <div class="rule center-vertical">
+                                <input type="checkbox" id="rules-spam-names" name="rules-spam-names" setting>
+                                <label for="rules-spam-names">TODO</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <h2>Actions</h2>
+        <div>
+            <label>Action:</label>
+            <select id="action">
+                <option value="remove">Remove</option>
+                <option value="highlight">Highlight</option>
+            </select>
+        </div>
+
+        <h2>Settings</h2>
+        <div class="rule center-vertical">
+            <input type="checkbox" id="use-rules" name="use-rules" setting>
+            <label for="use-rules">Use rules</label>
+        </div>
+        <div class="rule center-vertical">
+            <input type="checkbox" id="use-ml" name="use-ml" setting disabled>
+            <label for="use-ml"><del>Use ML</del> (Coming soon)</label>
+        </div>
+
+        <h2>Banned users/phrases</h2>
+        <div>
+            Coming soon...
+        </div>
+
+        <div class="bottom">
+            <button id="reset">Reset to defaults</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
