@@ -15,8 +15,12 @@
   "content_scripts": [
     {
       "js": [
-        "scripts/labels.js",
+        "scripts/defaults.js",
+        "scripts/utils.js",
+        "scripts/storage.js",
         "scripts/ort.js",
+        "scripts/labels.js",
+        "scripts/preprocess.js",
         "scripts/tokenizer.js",
         "scripts/model.js",
         "scripts/emojis.js",
