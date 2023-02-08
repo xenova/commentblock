@@ -1,19 +1,28 @@
-let labelsToRemove = [
-    COMMENT_LABEL.SCAM,
-    COMMENT_LABEL.EXPLICIT,
-    COMMENT_LABEL.LINK_SPAM,
-    COMMENT_LABEL.LINK_ONLY,
-];
+
+
+const LABEL_RULES_MAPPING = {
+    [COMMENT_LABEL.SCAM]: "rules-enabled-scam",
+    [COMMENT_LABEL.EXPLICIT]: "rules-enabled-explicit",
+    [COMMENT_LABEL.LINK_ONLY]: "rules-enabled-links", //TODO fix
+    [COMMENT_LABEL.SELF_PROMO]: "rules-enabled-selfpromo",
+    [COMMENT_LABEL.OTHER_PROMO]: "rules-enabled-otherpromo",
+    [COMMENT_LABEL.SPONSOR]: "rules-enabled-sponsor",
+    [COMMENT_LABEL.OTHER_SPAM]: "rules-enabled-spam",
+}
+
 let commentPredictions = {};
+
+const COMMENT_TAG = 'YTD-COMMENT-RENDERER';
+const COMMENT_THREAD_TAG = 'YTD-COMMENT-THREAD-RENDERER';
 
 (() => {
     // YTD-COMMENTS
     // YTD-COMMENTS-HEADER-RENDERER
     // YTD-COMMENT-SIMPLEBOX-RENDERER
-    // YTD-COMMENT-THREAD-RENDERER
+    // 
     // YTD-COMMENT-REPLIES-RENDERER
     // YTD-COMMENT-RENDERER
-    const commentTag = 'YTD-COMMENT-RENDERER';
+
 
     // TODO allow user to select what to remove
 
@@ -23,7 +32,7 @@ let commentPredictions = {};
             // A child node has been added or removed.
             if (!mutation.addedNodes) return;
 
-            if (mutation.target.tagName === commentTag) {
+            if (mutation.target.tagName === COMMENT_TAG) {
                 // When clicking show replies
                 processComment(mutation.target);
             } else {
@@ -32,7 +41,7 @@ let commentPredictions = {};
                 // since when browsing on YouTube, this doesn't get added again.
                 // Instead, we look for all comment renderers in the mutated object.
 
-                for (let comment of mutation.target.getElementsByTagName('YTD-COMMENT-RENDERER')) {
+                for (let comment of mutation.target.getElementsByTagName(COMMENT_TAG)) {
                     processComment(comment);
                 }
             }
@@ -81,13 +90,35 @@ async function action(comment, prediction) {
     }
     comment.setAttribute('processed', '')
 
+    // Check if the predicted category is enabled
+    let categoryEnabled = await getSetting(LABEL_RULES_MAPPING[prediction]);
+    if (!categoryEnabled) return; // Do nothing
 
-    if (labelsToRemove.includes(prediction)) {
+    // Now, decide what action to perform
+    let action = await getSetting('action');
+    if (action === 'remove') {
+        if (comment.parentElement.tagName === COMMENT_THREAD_TAG) {
+            // Is a top-level comment, so we delete the whole thread
+            // TODO add option for this
+            comment.parentElement.remove();
+
+            // TODO make sure to remove continuation spinner
+            // since it sometimes remains on the page
+        } else {
+            // Is a reply, so we just delete the reply
+            comment.remove();
+
+            // TODO if it is the only reply, remove the "1 reply" text
+        }
+
+    } else if (action === 'highlight') {
+        // TODO improve highlighting
         comment.style.backgroundColor = 'red';
+
+    } else {
+        console.log(`Unknown action: ${action}`)
     }
 
-    // TODO actually remove later, for debugging, make red
-    // mutation.target.remove(); 
 }
 
 
