@@ -25,28 +25,7 @@ class WordPieceTokenizer {
     }
 
     normalize(string) {
-
-        // 1. Deconstruct emojies into text
-        string = demojize(string)
-
-        // 2. Replace strange unicode characters with most similar ASCII character
-        // https://stackoverflow.com/a/37511463
-        //    'CLAIM 𝟏𝟎𝐊 𝐕𝐁𝐔𝐂𝐊𝐒 𝐂𝐇𝐄𝐂𝐊 𝐌𝐘 CHANNEL'
-        // -> 'CLAIM 10K VBUCKS CHECK MY CHANNEL'
-        string = string.normalize('NFKD')
-
-        // 3. Remove accents
-        string = string.replace(/\p{Diacritic}/gu, '');
-
-        // 4. Replace all whitespace with a single space
-        string = string.trim().replace(/\s\s+/g, ' ');
-
-        // 5. TODO remove specific duplicated characters
-
-        // 6. Convert to lowercase
-        string = string.toLowerCase();
-
-        return string;
+        return normalize(string)
     }
 
     pretokenize(text) {
