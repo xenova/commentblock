@@ -1,7 +1,8 @@
 let labelsToRemove = [
     COMMENT_LABEL.SCAM,
     COMMENT_LABEL.EXPLICIT,
-    COMMENT_LABEL.LINK_SPAM
+    COMMENT_LABEL.LINK_SPAM,
+    COMMENT_LABEL.LINK_ONLY,
 ];
 let commentPredictions = {};
 
@@ -52,6 +53,7 @@ async function processComment(comment) {
     let commentURL = new URL(comment.querySelector('.published-time-text > a').href)
     let commentID = commentURL.searchParams.get('lc')
 
+    // TODO add option to not use cache
     if (commentPredictions[commentID]) {
         if (commentPredictions[commentID] !== 'PROCESSING') {
             action(comment, commentPredictions[commentID]); // Re-run action
@@ -78,6 +80,8 @@ async function action(comment, prediction) {
         return;
     }
     comment.setAttribute('processed', '')
+
+
     if (labelsToRemove.includes(prediction)) {
         comment.style.backgroundColor = 'red';
     }
@@ -86,12 +90,34 @@ async function action(comment, prediction) {
     // mutation.target.remove(); 
 }
 
+
 async function makePrediction(authorName, commentText) {
-    // TODO access ban lists or hand-crafted rules first
+    // TODO 1. access ban lists
 
-    // Otherwise, we use the model
-    let model = await modelPromise;
-    return await model.predict(authorName, commentText)
+    // 2. use rules
+
+    let prediction = 'VALID'; // Assume comment is valid
+
+    let useRules = await getSetting('use-rules');
+    if (useRules) {
+
+        // TODO perform rule-based detection here
+        prediction = rule_detect(authorName, commentText)
+
+        if (prediction !== 'VALID') {
+            // If rules detected something, no need to use ML
+            // TODO sometimes rules are wrong, so, we should divide into
+            // "maybe" and "definite" based on rules
+            return prediction;
+        }
+    }
+    let useML = await getSetting('use-ml');
+    if (useML) {
+        // Do another check to determine whether the rules missed it
+        let model = await ModelFactory.getInstance();
+        prediction = await model.predict(authorName, commentText);
+    }
+
+    return prediction;
+
 }
-
-console.log('LOAD content.js');
