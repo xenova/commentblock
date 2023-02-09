@@ -41,13 +41,18 @@ const SCAM_AUTHOR_COMBOS = [
     ['on', 'telegram'],
     ['search', 'on', 'tele'],
 
-    ['visit', ':arrow_forward:️', 'com'],
+    ['visit', ':arrow_forward:', 'com'],
+    ['visit', ':play_button:', 'com'],
+
     ['contact', 'com'],
     ['google', 'search', 'com'],
     ['connect', ':point_right:', 'com'],
     [':point_right:', 'on', 'ig'],
     ['message', 'on', 'ig'],
+    ['on ig', ':point_left:'],
     ['recommend', ':point_right:'],
+    ['trade with', ':point_right:'],
+    ['earn', 'with', ':point_right:'],
 
     ['technopawns', 'com'],
     ['jinxhacks', 'com'],

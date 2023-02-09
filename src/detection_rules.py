@@ -49,19 +49,26 @@ SCAM_AUTHOR_COMBOS = [
     ['text', ':point_left:'],
     ['dm', ':point_right:'],
     ['dm', ':point_left:'],
+    ['instagram', ':point_right:'],
+    ['instagram', ':point_left:'],
 
     # TODO restrict to avoid false positives
     ['hack', 'on', 'tele'],
     ['on', 'telegram'],
     ['search', 'on', 'tele'],
 
-    ['visit', ':arrow_forward:️', 'com'],
+    ['visit', ':arrow_forward:', 'com'],
+    ['visit', ':play_button:', 'com'],
+
     ['contact', 'com'],
     ['google', 'search', 'com'],
     ['connect', ':point_right:', 'com'],
     [':point_right:', 'on', 'ig'],
     ['message', 'on', 'ig'],
+    ['on ig', ':point_left:'],
     ['recommend', ':point_right:'],
+    ['trade with', ':point_right:'],
+    ['earn', 'with', ':point_right:'],
 
     # 2. Custom
     ['technopawns', 'com'],
