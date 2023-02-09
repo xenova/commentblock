@@ -10,7 +10,6 @@ const LABEL_RULES_MAPPING = {
     [COMMENT_LABEL.OTHER_SPAM]: "rules-enabled-spam",
 }
 
-let commentPredictions = {};
 
 const COMMENT_TAG = 'YTD-COMMENT-RENDERER';
 const COMMENT_THREAD_TAG = 'YTD-COMMENT-THREAD-RENDERER';
@@ -58,20 +57,21 @@ const COMMENT_THREAD_TAG = 'YTD-COMMENT-THREAD-RENDERER';
 })();
 
 async function processComment(comment) {
+    if (comment.hasAttribute('processed')) return;
+    comment.setAttribute('processed', '')
 
     let commentURL = new URL(comment.querySelector('.published-time-text > a').href)
     let commentID = commentURL.searchParams.get('lc')
 
-    // TODO add option to not use cache
-    if (commentPredictions[commentID]) {
-        if (commentPredictions[commentID] !== 'PROCESSING') {
-            action(comment, commentPredictions[commentID]); // Re-run action
-        } else {
-            // Prediction is still running elsewhere, and will be updated there, so we ignore here.
-        }
-        return; // Either way, do not run prediction again
-    }
-    commentPredictions[commentID] = 'PROCESSING';
+    // // TODO add option to not use cache
+    // if (commentPredictions[commentID]) {
+    //     if (commentPredictions[commentID] !== 'PROCESSING') {
+    //         action(comment, commentPredictions[commentID]); // Re-run action
+    //     } else {
+    //         // Prediction is still running elsewhere, and will be updated there, so we ignore here.
+    //     }
+    //     return; // Either way, do not run prediction again
+    // }
 
     let authorData = comment.querySelector('#author-text');
     let authorName = authorData.innerText;
@@ -79,16 +79,11 @@ async function processComment(comment) {
     let authorChannelId = authorData.href.replace('https://www.youtube.com/channel/', '');
 
     let prediction = await makePrediction(authorName, commentText)
-    commentPredictions[commentID] = prediction;
-
     action(comment, prediction);
 }
 
 async function action(comment, prediction) {
-    if (comment.hasAttribute('processed')) {
-        return;
-    }
-    comment.setAttribute('processed', '')
+
 
     // Check if the predicted category is enabled
     let categoryEnabled = await getSetting(LABEL_RULES_MAPPING[prediction]);
@@ -111,9 +106,13 @@ async function action(comment, prediction) {
             // TODO if it is the only reply, remove the "1 reply" text
         }
 
-    } else if (action === 'highlight') {
-        // TODO improve highlighting
-        comment.style.backgroundColor = 'red';
+    } else if (action === 'blur') {
+        // TODO improve blurring
+        let overlay = document.createElement('div');
+        overlay.className = 'blurred-comment-overlay';
+
+        comment.append(overlay);
+        // comment.style.backgroundColor = 'red';
 
     } else {
         console.log(`Unknown action: ${action}`)
