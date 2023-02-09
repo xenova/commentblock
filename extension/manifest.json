@@ -3,17 +3,32 @@
   "name": "CommentBlock",
   "description": "Block spam/scam comments",
   "version": "0.0.1",
-  "permissions": ["storage", "tabs"],
-  "host_permissions": ["*://*.youtube.com/*"],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
   "background": {
     "service_worker": "service-worker.js"
   },
-  "web_accessible_resources": [{
-    "resources": ["model/*", "ort-wasm-simd.wasm"],
-    "matches": ["*://*.youtube.com/*"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "model/*",
+        "ort-wasm-simd.wasm"
+      ],
+      "matches": [
+        "*://*.youtube.com/*"
+      ]
+    }
+  ],
   "content_scripts": [
     {
+      "css": [
+        "styles/style.css"
+      ],
       "js": [
         "scripts/defaults.js",
         "scripts/utils.js",
@@ -27,7 +42,9 @@
         "scripts/detection.js",
         "scripts/content.js"
       ],
-      "matches": ["https://*.youtube.com/*"]
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
     }
   ],
   "action": {
