@@ -1,8 +1,8 @@
 .blurred-comment-overlay {
-    width: 102%;
-    height: 120%;
-    top: -10%;
-    left: -1%;
+    width: 104%;
+    height: 128%;
+    top: -15%;
+    left: -2%;
     position: absolute;
     z-index: 1;
     backdrop-filter: blur(8px);
@@ -12,4 +12,10 @@
     margin-left: calc(-1 * var(--ytd-decorated-comment-background-offset-left, 0px));
     padding-top: var(--ytd-decorated-comment-background-offset-top, 0px);
     padding-left: var(--ytd-decorated-comment-background-offset-left, 0px);
+}
+
+/* Ensure replies button is above blurry overlay */
+ytd-comment-thread-renderer #replies {
+    z-index: 2;
+    position: relative;
 }
