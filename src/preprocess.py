@@ -11,6 +11,64 @@ UNICODE_CATEGORIES_STRIP = ['Mn', 'Cc', 'Cf', 'Cs', 'Co', 'Cn', 'Sk']
 
 SKIN_TONE_REGEX = re.compile(r'\ud83c[\udffb-\udfff]')
 
+# Map of "Phonetic Extensions" and "Phonetic Extensions Supplement" (\u1d00 to \u1dbf)
+# characters that do not map to ascii characters after normalisation, to similar-looking
+# ascii characters. These are typically used by scammers.
+PHONETIC_CHARS = {
+    'ᴀ': 'A', 'ᴁ': 'AE', 'ᴂ': 'ae',
+    'ᴃ': 'B', 'ᴄ': 'C', 'ᴅ': 'D',
+    'ᴆ': 'D', 'ᴇ': 'E', 'ᴈ': '3',
+    'ᴉ': 'i', 'ᴊ': 'J', 'ᴋ': 'K',
+    'ᴌ': 'L', 'ᴍ': 'M', 'ᴎ': 'N',
+    'ᴏ': 'o', 'ᴐ': 'c', 'ᴑ': 'o',
+    'ᴒ': 'n', 'ᴓ': 'o', 'ᴔ': 'oe',
+    'ᴕ': 'ou', 'ᴖ': 'n', 'ᴗ': 'u',
+    'ᴘ': 'P', 'ᴙ': 'R', 'ᴚ': 'R',
+    'ᴛ': 'T', 'ᴜ': 'U', 'ᴝ': 'u',
+    'ᴞ': 'u', 'ᴟ': 'm', 'ᴠ': 'V',
+    'ᴡ': 'W', 'ᴢ': 'Z', 'ᴣ': '3',
+    'ᴤ': '2', 'ᴥ': 'ain', 'ᴦ': 'L',
+    'ᴧ': 'A', 'ᴨ': 'N', 'ᴩ': 'P',
+    'ᴪ': 'W', 'ᴫ': 'N', 'ᴯ': 'B',
+    'Ǝ': '3', 'ᴻ': 'N', 'Ȣ': 'Ou',
+    'ɐ': 'a', 'ɑ': 'a', 'ə': 'e',
+    'ɛ': 'e', 'ɜ': '3', 'ᵎ': 'i',
+    'ŋ': 'n', 'ɔ': 'c', 'ɯ': 'w',
+    'β': 'B', 'γ': 'Y', 'δ': 'd',
+    'φ': 'o', 'χ': 'X', 'ρ': 'p',
+    'ᵫ': 'eu', 'ᵬ': 'b', 'ᵭ': 'd',
+    'ᵮ': 'f', 'ᵯ': 'm', 'ᵰ': 'n',
+    'ᵱ': 'p', 'ᵲ': 'r', 'ᵳ': 'r',
+    'ᵴ': 's', 'ᵵ': 't', 'ᵶ': 'z',
+    'ᵷ': 'g', 'н': 'H', 'ᵹ': 'g',
+    'ᵺ': 'th', 'ᵻ': 'i', 'ᵼ': 'i',
+    'ᵽ': 'p', 'ᵾ': 'u', 'ᵿ': 'u',
+    'ᶀ': 'b', 'ᶁ': 'd', 'ᶂ': 'f',
+    'ᶃ': 'g', 'ᶄ': 'k', 'ᶅ': 'l',
+    'ᶆ': 'm', 'ᶇ': 'n', 'ᶈ': 'p',
+    'ᶉ': 'r', 'ᶊ': 's', 'ᶋ': 'l',
+    'ᶌ': 'v', 'ᶍ': 'x', 'ᶎ': 'z',
+    'ᶏ': 'a', 'ᶐ': 'a', 'ᶑ': 'd',
+    'ᶒ': 'e', 'ᶓ': 'e', 'ᶔ': '3',
+    'ᶕ': 'e', 'ᶖ': 'i', 'ᶗ': 'p',
+    'ᶘ': 'l', 'ᶙ': 'u', 'ᶚ': '3',
+    'ɒ': 'a', 'ɕ': 'c', 'ɟ': 'j',
+    'ɡ': 'g', 'ɥ': 'u', 'ɨ': 'i',
+    'ɩ': 'i', 'ɪ': 'I', 'ʝ': 'j',
+    'ɭ': 'l', 'ʟ': 'L', 'ɱ': 'm',
+    'ɰ': 'w', 'ɲ': 'n', 'ɳ': 'n',
+    'ɴ': 'N', 'ɵ': 'o', 'ɸ': 'o',
+    'ʂ': 's', 'ʃ': 'l', 'ƫ': 't',
+    'ʉ': 'u', 'ʊ': 'u', 'ʋ': 'u',
+    'ʌ': 'n', 'ʐ': 'z', 'ʑ': 'z',
+    'ʒ': '3', 'θ': 'O'
+}
+
+
+def replace_similar_chars(text):
+    return ''.join(PHONETIC_CHARS.get(x, x) for x in text)
+
+
 def remove_unicode_categories(string):
     return ''.join(char for char in string if unicodedata.category(char) not in UNICODE_CATEGORIES_STRIP)
 
@@ -18,8 +76,10 @@ def remove_unicode_categories(string):
 def replace_whitespace_with_spaces(string):
     return ' '.join(string.strip().split())
 
+
 def remove_emoji_skin_tones(string):
     return re.sub(SKIN_TONE_REGEX, '', string)
+
 
 def normalise(string):
     # 0. Make sure it is a string
@@ -33,6 +93,7 @@ def normalise(string):
 
     # 2. Replace strange unicode characters with most similar ASCII character
     string = unicodedata.normalize('NFKD', string)
+    string = replace_similar_chars(string)
 
     # 3. Remove certain types of unicode categories, like accents
     string = remove_unicode_categories(string)
