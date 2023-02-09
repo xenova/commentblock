@@ -75,15 +75,30 @@ async function processComment(comment) {
 
     let authorData = comment.querySelector('#author-text');
     let authorName = authorData.innerText;
-    let commentText = comment.querySelector('#comment-content').innerText;
+    let commentText = extractTextFromElement(comment.querySelector('#comment-content #content-text'));
     let authorChannelId = authorData.href.replace('https://www.youtube.com/channel/', '');
 
     let prediction = await makePrediction(authorName, commentText)
     action(comment, prediction);
 }
 
-async function action(comment, prediction) {
+function extractTextFromElement(element) {
+    let text = '';
 
+    for (const child of element.childNodes) {
+        if (child.nodeValue !== null) {
+            text += child.nodeValue;
+        } else {
+            if (child.tagName === 'IMG') {
+                text += child.alt;
+            }
+            text += extractTextFromElement(child);
+        }
+    }
+    return text;
+}
+
+async function action(comment, prediction) {
 
     // Check if the predicted category is enabled
     let categoryEnabled = await getSetting(LABEL_RULES_MAPPING[prediction]);
