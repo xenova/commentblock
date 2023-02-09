@@ -51,6 +51,7 @@ SCAM_AUTHOR_COMBOS = [
     ['dm', ':point_left:'],
     ['instagram', ':point_right:'],
     ['instagram', ':point_left:'],
+    ['text', 'on', 'instagram'],
 
     # TODO restrict to avoid false positives
     ['hack', 'on', 'tele'],
@@ -73,8 +74,23 @@ SCAM_AUTHOR_COMBOS = [
     # 2. Custom
     ['technopawns', 'com'],
     ['jinxhacks', 'com'],
+
+    ['made more than', '$', 'from'],
 ]
 
+SCAM_TEXT_COMBOS = [
+    ['appreciat', 'recommend', ':point_up:'],
+
+]
+SCAM_NAME_TEXT_COMBOS = [
+    # [author_items, text_items]
+    [['contact'], ['username', 'above']],
+    [['com'], ['name', 'above']],
+
+    [['contact'], ['thank you']],
+    [['com'], ['you deserve', ':point_up:', 'recommend']],
+    [['via ig'], ['when i met ', ':up_arrow:', 'thank you']],
+]
 
 # TODO use
 spamGeneralEmoji = '👇👆☝👈👉⤵️🔼⬆️♜💬🔝⤴⏩⬆📩'
@@ -123,13 +139,20 @@ KNOWN_SPAM = {
 }
 
 
-def combo_detect(text, combos):
-    return any(
-        all(
-            (x[1:] not in text) if x.startswith('~') else (x in text)
-            for x in item)
-        for item in combos
-    )
+def _combo_helper(text, items):
+    return all((x[1:] not in text) if x.startswith('~') else (x in text) for x in items)
+
+
+def combo_detect(text, combinations):
+    if isinstance(text, list):
+        # Multiple arguments specified, so we perform zipped-comparisons
+        gen = (
+            all(_combo_helper(t, i) for t, i in zip(text, item))
+            for item in combinations
+        )
+    else:
+        gen = (_combo_helper(text, item) for item in combinations)
+    return any(gen)
 
 
 def flag(comment):
@@ -164,7 +187,12 @@ def flag(comment):
     if TEXT_EXACT_BLACK_WORDS.search(normalised_text):
         return CommentLabel.SCAM
 
-    # Convert to JS
+    if combo_detect(normalised_text, SCAM_TEXT_COMBOS):
+        return CommentLabel.SCAM
+
+    if combo_detect([normalised_author_name, normalised_text], SCAM_NAME_TEXT_COMBOS):
+        return CommentLabel.SCAM
+
     if all(
         any(x in normalised_text for x in items)
         for items in (LINK_SPAM_PHRASES, LINK_SPAM_DOMAINS)
