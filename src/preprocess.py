@@ -29,7 +29,7 @@ def normalise(string):
     # Needed since we want to extract the semantic meaning from the emojis,
     # as opposed to <UNK>, which many tokenizers will assign to it
     string = remove_emoji_skin_tones(string)
-    string = emoji.demojize(string)
+    string = emoji.demojize(string, language='alias')
 
     # 2. Replace strange unicode characters with most similar ASCII character
     string = unicodedata.normalize('NFKD', string)
