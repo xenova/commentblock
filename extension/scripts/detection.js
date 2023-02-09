@@ -36,8 +36,9 @@ const SCAM_AUTHOR_COMBOS = [
     ['dm', ':point_left:'],
     ['instagram', ':point_right:'],
     ['instagram', ':point_left:'],
+    ['text', 'on', 'instagram'],
 
-    ['hack', 'on', 'tele'],
+    ['hack', 'on', 'teleg'],
     ['on', 'telegram'],
     ['search', 'on', 'tele'],
 
@@ -57,6 +58,24 @@ const SCAM_AUTHOR_COMBOS = [
     ['technopawns', 'com'],
     ['jinxhacks', 'com'],
 
+    ['made more than', '$', 'from'],
+]
+
+const SCAM_TEXT_COMBOS = [
+    ['appreciat', 'recommend', ':point_up:'],
+
+    // 'the username above the comments'
+
+]
+
+const SCAM_NAME_TEXT_COMBOS = [
+    // [author_items, text_items]
+    [['contact'], ['username', 'above']],
+    [['com'], ['name', 'above']],
+
+    [['contact'], ['thank you']],
+    [['com'], ['you deserve', ':point_up:', 'recommend']],
+    [['via ig'], ['when i met ', ':up_arrow:', 'thank you']],
 ]
 
 const LINK_SPAM_PHRASES = [
@@ -93,12 +112,16 @@ function containsLinkSpam(text) {
 }
 
 
-function comboDetect(text, combos) {
-    return combos.some(function (item) {
-        return item.every(function (x) {
-            return x.startsWith('~') ? text.indexOf(x.slice(1)) === -1 : text.indexOf(x) !== -1;
-        });
-    });
+function _comboHelper(text, items) {
+    return items.every(x => x.startsWith('~') ? !text.includes(x.slice(1)) : text.includes(x));
+}
+
+function comboDetect(text, combinations) {
+    if (Array.isArray(text)) {
+        return combinations.some(item => text.every((t, i) => _comboHelper(t, item[i])));
+    } else {
+        return combinations.some(item => _comboHelper(text, item));
+    }
 }
 
 function rule_detect(authorName, commentText) {
@@ -116,7 +139,6 @@ function rule_detect(authorName, commentText) {
         return COMMENT_LABEL.SCAM;
 
     let normalizedUsername = normalize(authorName);
-    console.log('normalizedUsername', normalizedUsername)
     if (comboDetect(normalizedUsername, SCAM_AUTHOR_COMBOS))
         return COMMENT_LABEL.SCAM;
 
@@ -127,6 +149,11 @@ function rule_detect(authorName, commentText) {
 
     let normalizedText = normalize(commentText);
     if (normalizedText.match(TEXT_EXACT_BLACK_WORDS))
+        return COMMENT_LABEL.SCAM;
+    if (comboDetect(normalizedText, SCAM_TEXT_COMBOS))
+        return COMMENT_LABEL.SCAM;
+
+    if (comboDetect([normalizedUsername, normalizedText], SCAM_NAME_TEXT_COMBOS))
         return COMMENT_LABEL.SCAM;
 
     if (containsLinkSpam(normalizedText))
