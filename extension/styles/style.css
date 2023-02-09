@@ -1,0 +1,15 @@
+.blurred-comment-overlay {
+    width: 102%;
+    height: 120%;
+    top: -10%;
+    left: -1%;
+    position: absolute;
+    z-index: 1;
+    backdrop-filter: blur(8px);
+    border-radius: 4px;
+
+    margin-top: calc(-1 * var(--ytd-decorated-comment-background-offset-top, 0px));
+    margin-left: calc(-1 * var(--ytd-decorated-comment-background-offset-left, 0px));
+    padding-top: var(--ytd-decorated-comment-background-offset-top, 0px);
+    padding-left: var(--ytd-decorated-comment-background-offset-left, 0px);
+}

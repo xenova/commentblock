@@ -32,7 +32,7 @@ const DEFAULT_OPTIONS = {
     "rules-spam-wafflehouse": true,
 
     // Actions
-    "action": 'remove',
+    "action": 'blur',
 
 
     // OTHER SETTINGS:
