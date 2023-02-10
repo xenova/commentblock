@@ -1,9 +1,13 @@
 
 
 const LABEL_RULES_MAPPING = {
+    // prediction: rule | [rules]
+    // if any of the rules is enabled, 
     [COMMENT_LABEL.SCAM]: "rules-enabled-scam",
     [COMMENT_LABEL.EXPLICIT]: "rules-enabled-explicit",
-    [COMMENT_LABEL.LINK_ONLY]: "rules-enabled-links", //TODO fix
+    [COMMENT_LABEL.LINK_SPAM]: ["rules-links-spam", "rules-links-contains"],
+    [COMMENT_LABEL.LINK_ONLY]: ["rules-links-only", "rules-links-contains"],
+    [COMMENT_LABEL.LINK_CONTAINS]: "rules-links-contains",
     [COMMENT_LABEL.SELF_PROMO]: "rules-enabled-selfpromo",
     [COMMENT_LABEL.OTHER_PROMO]: "rules-enabled-otherpromo",
     [COMMENT_LABEL.SPONSOR]: "rules-enabled-sponsor",
@@ -62,6 +66,7 @@ async function processComment(comment) {
 
     let commentURL = new URL(comment.querySelector('.published-time-text > a').href)
     let commentID = commentURL.searchParams.get('lc')
+    // if (commentID !== '') return;
 
     // // TODO add option to not use cache
     // if (commentPredictions[commentID]) {
@@ -78,7 +83,14 @@ async function processComment(comment) {
     let commentText = extractTextFromElement(comment.querySelector('#comment-content #content-text'));
     let authorChannelId = authorData.href.replace('https://www.youtube.com/channel/', '');
 
-    let prediction = await makePrediction(authorName, commentText)
+    // Set data attributes
+    comment.data = {
+        author_name: authorName,
+        author_channel_id: authorChannelId,
+        text: commentText,
+    }
+
+    let prediction = await makePrediction(comment)
     action(comment, prediction);
 }
 
@@ -101,7 +113,14 @@ function extractTextFromElement(element) {
 async function action(comment, prediction) {
 
     // Check if the predicted category is enabled
-    let categoryEnabled = await getSetting(LABEL_RULES_MAPPING[prediction]);
+    let rules = LABEL_RULES_MAPPING[prediction];
+    let categoryEnabled;
+    if (Array.isArray(rules)) {
+        categoryEnabled = (await Promise.all(rules.map(rule => getSetting(rule)))).some(x => x)
+    } else {
+        categoryEnabled = await getSetting(rules);
+    }
+
     if (!categoryEnabled) return; // Do nothing
 
     // Now, decide what action to perform
@@ -136,7 +155,8 @@ async function action(comment, prediction) {
 }
 
 
-async function makePrediction(authorName, commentText) {
+async function makePrediction(comment) {
+
     // TODO 1. access ban lists
 
     // 2. use rules
@@ -147,8 +167,7 @@ async function makePrediction(authorName, commentText) {
     if (useRules) {
 
         // TODO perform rule-based detection here
-        prediction = rule_detect(authorName, commentText)
-
+        prediction = rule_detect(comment)
         if (prediction !== 'VALID') {
             // If rules detected something, no need to use ML
             // TODO sometimes rules are wrong, so, we should divide into
@@ -160,7 +179,7 @@ async function makePrediction(authorName, commentText) {
     if (useML) {
         // Do another check to determine whether the rules missed it
         let model = await ModelFactory.getInstance();
-        prediction = await model.predict(authorName, commentText);
+        prediction = await model.predict(comment.data.author_name, comment.data.text);
     }
 
     return prediction;
