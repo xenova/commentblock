@@ -126,13 +126,8 @@ for (let item of LINK_SPAM_COMBOS) {
 }
 
 
-const KNOWN_SPAM = [
-    'waffle house found its new host',
-    'waffle house has found its new host',
-    "waffle house has found it's new host",
-    "waffle house has found it’s new host",
-    'waffle house has found a new host',
-    'waffle house had found its new host',
+const KNOWN_SPAM_COMBOS = [
+    ['waffle house ', 'found ', 'new host']
 ]
 
 function _comboHelper(text, items) {
@@ -198,8 +193,7 @@ function rule_detect(comment) {
     if (comboDetect([normalizedUsername, normalizedText], SCAM_NAME_TEXT_COMBOS))
         return COMMENT_LABEL.SCAM;
 
-
-    if (containsAny(normalizedText, KNOWN_SPAM))
+    if (comboDetect(normalised_text, KNOWN_SPAM_COMBOS))
         return COMMENT_LABEL.OTHER_SPAM;
 
     let combined = authorName + ' ' + commentText

@@ -116,14 +116,9 @@ PHONE_NUM_REGEX = RE(
     f'([{PLUS_CHARS}] ? ?[1]|[+] ? ?[{ONE_CHARS}]|[{PLUS_CHARS}] ? ?[{ONE_CHARS}])')
 
 
-KNOWN_SPAM = {
-    'waffle house found its new host',
-    'waffle house has found its new host',
-    "waffle house has found it's new host",
-    "waffle house has found it’s new host",
-    'waffle house has found a new host',
-    'waffle house had found its new host',
-}
+KNOWN_SPAM_COMBOS = [
+    ['waffle house ', 'found ', 'new host']
+]
 
 
 LINK_SPAM_DOMAINS = RE(r'youtu\.?be(\.com)?/')
@@ -240,7 +235,7 @@ def flag(comment):
     if combo_detect([normalised_author_name, normalised_text], SCAM_NAME_TEXT_COMBOS):
         return CommentLabel.SCAM
 
-    if any(x in normalised_text for x in KNOWN_SPAM):
+    if combo_detect(normalised_text, KNOWN_SPAM_COMBOS):
         return CommentLabel.OTHER_SPAM
 
     combined = author_name + ' ' + text
