@@ -240,7 +240,6 @@ def flag(comment):
 
     combined = author_name + ' ' + text
 
-    # Run checks, returning True if flagged
     if len(ONLY_NUM_REGEX.findall(combined)) >= 6:
         return CommentLabel.SCAM
     if PHONE_NUM_REGEX.search(combined):
