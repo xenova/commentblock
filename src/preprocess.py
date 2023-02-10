@@ -11,10 +11,10 @@ UNICODE_CATEGORIES_STRIP = ['Mn', 'Cc', 'Cf', 'Cs', 'Co', 'Cn', 'Sk']
 
 SKIN_TONE_REGEX = re.compile(r'\ud83c[\udffb-\udfff]')
 
-# Map of "Phonetic Extensions" and "Phonetic Extensions Supplement" (\u1d00 to \u1dbf)
-# characters that do not map to ascii characters after normalisation, to similar-looking
-# ascii characters. These are typically used by scammers.
-PHONETIC_CHARS = {
+# Map of characters that do not map to ascii characters after normalisation,
+# to similar-looking ascii characters. These are typically used by scammers.
+SIMILAR_CHAR_MAPPING = {
+    # "Phonetic Extensions" and "Phonetic Extensions Supplement" (\u1d00 to \u1dbf)
     'ᴀ': 'A', 'ᴁ': 'AE', 'ᴂ': 'ae',
     'ᴃ': 'B', 'ᴄ': 'C', 'ᴅ': 'D',
     'ᴆ': 'D', 'ᴇ': 'E', 'ᴈ': '3',
@@ -61,12 +61,35 @@ PHONETIC_CHARS = {
     'ʂ': 's', 'ʃ': 'l', 'ƫ': 't',
     'ʉ': 'u', 'ʊ': 'u', 'ʋ': 'u',
     'ʌ': 'n', 'ʐ': 'z', 'ʑ': 'z',
-    'ʒ': '3', 'θ': 'O'
+    'ʒ': '3', 'θ': 'O',
+
+    # IPA Extensions (\u0250 -> \u02AF)
+    'ɓ': 'b', 'ɖ': 'd', 'ɗ': 'd',
+    'ɘ': 'e', 'ɚ': 'e', 'ɝ': '3',
+    'ɞ': 'e', 'ɠ': 'g', 'ɢ': 'G',
+    'ɣ': 'Y', 'ɤ': 'y', 'ɦ': 'h',
+    'ɧ': 'h', 'ɫ': 'l', 'ɬ': 'l',
+    'ɮ': 'l3', 'ɶ': 'oe', 'ɷ': 'o',
+    'ɹ': 'r', 'ɺ': 'r', 'ɻ': 'r',
+    'ɼ': 'r', 'ɽ': 'r', 'ɾ': 'r',
+    'ɿ': 'r', 'ʀ': 'R', 'ʁ': 'R',
+    'ʄ': 'f', 'ʅ': 'l', 'ʆ': 'l',
+    'ʇ': 't', 'ʈ': 't', 'ʍ': 'M',
+    'ʎ': 'y', 'ʏ': 'Y', 'ʓ': '3',
+    'ʔ': '?', 'ʕ': '?', 'ʖ': '?',
+    'ʗ': 'C', 'ʘ': 'O', 'ʙ': 'B',
+    'ʚ': 'o', 'ʛ': 'G', 'ʜ': 'H',
+    'ʞ': 'k', 'ʠ': 'q', 'ʡ': '?',
+    'ʢ': '?', 'ʣ': 'dz', 'ʤ': 'd3',
+    'ʥ': 'dz', 'ʦ': 'ts', 'ʧ': 'tf',
+    'ʨ': 'tc', 'ʩ': 'fn', 'ʪ': 'ls',
+    'ʫ': 'lz', 'ʬ': 'W', 'ʭ': 'n',
+    'ʮ': 'u', 'ʯ': 'u',
 }
 
 
 def replace_similar_chars(text):
-    return ''.join(PHONETIC_CHARS.get(x, x) for x in text)
+    return ''.join(SIMILAR_CHAR_MAPPING.get(x, x) for x in text)
 
 
 def remove_unicode_categories(string):

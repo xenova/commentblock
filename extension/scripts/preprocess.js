@@ -1,4 +1,4 @@
-const PHONETIC_CHARS = {
+const SIMILAR_CHAR_MAPPING = {
     'ᴀ': 'A', 'ᴁ': 'AE', 'ᴂ': 'ae',
     'ᴃ': 'B', 'ᴄ': 'C', 'ᴅ': 'D',
     'ᴆ': 'D', 'ᴇ': 'E', 'ᴈ': '3',
@@ -45,15 +45,38 @@ const PHONETIC_CHARS = {
     'ʂ': 's', 'ʃ': 'l', 'ƫ': 't',
     'ʉ': 'u', 'ʊ': 'u', 'ʋ': 'u',
     'ʌ': 'n', 'ʐ': 'z', 'ʑ': 'z',
-    'ʒ': '3', 'θ': 'O'
+    'ʒ': '3', 'θ': 'O',
+
+    'ɓ': 'b', 'ɖ': 'd', 'ɗ': 'd',
+    'ɘ': 'e', 'ɚ': 'e', 'ɝ': '3',
+    'ɞ': 'e', 'ɠ': 'g', 'ɢ': 'G',
+    'ɣ': 'Y', 'ɤ': 'y', 'ɦ': 'h',
+    'ɧ': 'h', 'ɫ': 'l', 'ɬ': 'l',
+    'ɮ': 'l3', 'ɶ': 'oe', 'ɷ': 'o',
+    'ɹ': 'r', 'ɺ': 'r', 'ɻ': 'r',
+    'ɼ': 'r', 'ɽ': 'r', 'ɾ': 'r',
+    'ɿ': 'r', 'ʀ': 'R', 'ʁ': 'R',
+    'ʄ': 'f', 'ʅ': 'l', 'ʆ': 'l',
+    'ʇ': 't', 'ʈ': 't', 'ʍ': 'M',
+    'ʎ': 'y', 'ʏ': 'Y', 'ʓ': '3',
+    'ʔ': '?', 'ʕ': '?', 'ʖ': '?',
+    'ʗ': 'C', 'ʘ': 'O', 'ʙ': 'B',
+    'ʚ': 'o', 'ʛ': 'G', 'ʜ': 'H',
+    'ʞ': 'k', 'ʠ': 'q', 'ʡ': '?',
+    'ʢ': '?', 'ʣ': 'dz', 'ʤ': 'd3',
+    'ʥ': 'dz', 'ʦ': 'ts', 'ʧ': 'tf',
+    'ʨ': 'tc', 'ʩ': 'fn', 'ʪ': 'ls',
+    'ʫ': 'lz', 'ʬ': 'W', 'ʭ': 'n',
+    'ʮ': 'u', 'ʯ': 'u',
+}
+
+
+function replaceSimilarChars(text) {
+    return Array.from(text).map(x => SIMILAR_CHAR_MAPPING[x] || x).join('');
 }
 
 function replaceWhitespaceWithSpaces(string) {
     return string.trim().replace(/\s\s+/g, ' ');;
-}
-
-function replaceSimilarChars(text) {
-    return Array.from(text).map(x => PHONETIC_CHARS[x] || x).join('');
 }
 
 function normalize(string) {
