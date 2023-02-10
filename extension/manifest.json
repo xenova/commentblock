@@ -4,8 +4,7 @@
   "description": "Block spam/scam comments",
   "version": "0.0.1",
   "permissions": [
-    "storage",
-    "tabs"
+    "storage"
   ],
   "host_permissions": [
     "*://*.youtube.com/*"
