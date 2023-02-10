@@ -64,8 +64,7 @@ const SCAM_AUTHOR_COMBOS = [
 const SCAM_TEXT_COMBOS = [
     ['appreciat', 'recommend', ':point_up:'],
 
-    // 'the username above the comments'
-
+    ['free vbucks', 'http'],
 ]
 
 const SCAM_NAME_TEXT_COMBOS = [
@@ -78,28 +77,54 @@ const SCAM_NAME_TEXT_COMBOS = [
     [['via ig'], ['when i met ', ':up_arrow:', 'thank you']],
 ]
 
-const LINK_SPAM_PHRASES = [
-    'finally it’s here',
-    "finally it's here",
-    'finally its here',
-    'its finally here',
-    'lets be honest we all enjoyed this video by having this',
-    'i think youre looking for this',
-    'here finally',
-    'here is what happened',
-    'last fight',
-    'full clip',
-    'here is the full video',
-    'here is the full clip explain',
-    'link to the clip : thank me later',
-    'this is the clip u all looking for',
-    'link to the clip thats going viral',
-    'link to the clip explains the solution to bots',
-    'link to the clip part 2',
-    'here is the recommended clip',
-    'full recommended clip'
+const LINK_SPAM_DOMAINS = new RegExp('youtu\\.?be(\\.com)?/', 'g')
+
+let LINK_SPAM_COMBOS = [
+    [new RegExp("finally it(’|'|)s here", 'g')],
+    [new RegExp("it(’|'|)s finally here", 'g')],
+    [new RegExp("let(’|'|)s be honest we all enjoyed this video by having this", 'g')],
+    [new RegExp("i think you(’|'|)re looking for this", 'g')],
+    ['here finally'],
+    ['here is what happened'],
+    ['here ', 'is ', 'full short'],
+    ['here', 'the video that explains'],
+    ['last fight'],
+    [new RegExp('here is the full (vid|clip)')],
+
+    ['link to the clip', new RegExp("it(’|'|)s time", 'g')],
+    ['link to the clip', new RegExp("that(’|'|)s going viral", 'g')],
+    ['link to the clip', 'thank me later'],
+    ['link to the clip', 'bots'],
+    ['link to the clip', 'part 2'],
+    ['this is the clip', 'looking for'],
+
+    ['have been waiting so long for this'],
+    ['here is', 'vid', 'you have been waiting for'],
+    ['here is the recommended clip'],
+    ['full recommended clip'],
+    ['full video is up on my page'],
+
+    ['this is the reason jesus died for'],
+    ['this is my response to'],
+
+    ['funny footage of', 'raping'],
+    [new RegExp("^full video:", 'g')],
+    ['full vid', ':arrow_forward:'],
+    ['funny vid', ':arrow_forward:'],
+    ['full video', 'this is what my boss said'],
+
+    ['check out the full'],
+    ['click this if you like'],
+    ['you can watch ', 'it here'],
+
+    ['since the video ', 'here is the backup'],
+    ['believe', 'it is finally released'],
 ]
-const LINK_SPAM_DOMAINS = ['youtu.be', 'youtube.com']
+
+for (let item of LINK_SPAM_COMBOS) {
+    item.push(LINK_SPAM_DOMAINS);
+}
+
 
 const KNOWN_SPAM = [
     'waffle house found its new host',
@@ -110,13 +135,24 @@ const KNOWN_SPAM = [
     'waffle house had found its new host',
 ]
 
-function containsLinkSpam(text) {
-    return containsAny(text, LINK_SPAM_PHRASES) && containsAny(text, LINK_SPAM_DOMAINS)
-}
-
-
 function _comboHelper(text, items) {
-    return items.every(x => x.startsWith('~') ? !text.includes(x.slice(1)) : text.includes(x));
+
+    for (let item of items) {
+
+        if (item instanceof RegExp) {
+            if (!text.match(item)) return false;
+
+        } else { // is a string
+
+            let matches = item.startsWith('~') ?
+                !text.includes(item.slice(1))
+                : text.includes(item);
+            if (!matches) return false;
+
+        }
+
+    }
+    return true;
 }
 
 function comboDetect(text, combinations) {
@@ -174,7 +210,7 @@ function rule_detect(comment) {
     if (combined.match(PHONE_NUM_REGEX))
         return COMMENT_LABEL.SCAM;
 
-    if (containsLinkSpam(normalizedText))
+    if (comboDetect(normalizedText, LINK_SPAM_COMBOS))
         return COMMENT_LABEL.LINK_SPAM;
     if (isValidUrl(commentText))
         return COMMENT_LABEL.LINK_ONLY;
