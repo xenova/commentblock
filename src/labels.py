@@ -1,6 +1,7 @@
 
 from enum import Enum, auto
 
+
 class CommentLabel(Enum):
     # VALID
     # (any normal comment)
@@ -27,17 +28,17 @@ class CommentLabel(Enum):
     # - sex bots
     EXPLICIT = auto()
 
-    # LINK_ONLY
-    # - comments which contain a single URL
-    LINK_ONLY = auto()
-
     # LINK_SPAM
     # - comments which contain URLs to other content
     LINK_SPAM = auto()
 
-    # MALICIOUS_LINKS
-    # - comment contains malicious URL(s)
-    MALICIOUS_LINKS = auto()
+    # LINK_ONLY
+    # - comments which contain a single URL
+    LINK_ONLY = auto()
+
+    # LINK_CONTAINS
+    # - comment contains URL(s)
+    LINK_CONTAINS = auto()
 
     # OTHER_SPAM
     # - nonsense
@@ -47,7 +48,13 @@ class CommentLabel(Enum):
     # - comments that are in response to a scam comment
     REPLY_TO_SCAM = auto()
 
-
     @classmethod
     def names(cls):
         return [x.name for x in cls]
+
+    @classmethod
+    def rule_detected(cls):
+        # Get categories which can be detected using rules
+        return [
+            cls.LINK_ONLY, cls.LINK_CONTAINS
+        ]
