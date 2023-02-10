@@ -215,7 +215,7 @@ def flag(comment):
         return CommentLabel.LINK_SPAM
 
     contains_url, exact_url = validate_url(text)
-    if exact_url(text):
+    if exact_url:
         return CommentLabel.LINK_ONLY
 
     if contains_url:
