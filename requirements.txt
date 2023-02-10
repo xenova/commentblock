@@ -2,6 +2,5 @@ scikit-learn
 transformers
 sentence-transformers
 google-api-python-client
-validators
 emoji
 morepython
