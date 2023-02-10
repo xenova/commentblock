@@ -15,7 +15,7 @@ const ONLY_NUM_REGEX = new RegExp(Base64.decode("77yQfO+8kXzvvJJ877yTfO+8lHzvvJV
 
 const PHONE_NUM_REGEX = new RegExp(Base64.decode("KFvilLzilYLilYvljYHilL/inJrinJninpXCscuW4ZCp4oG64oKK4oiT4oiU4oqV4oqe4p+04qe64qe74qiB4qiE4qii4qij4qik4qil4qim4qin4qio4qit4qiu4qi54qmx4qmy4qyy77mi77yL4Zut4oGc4pip4pio4pim4pmw4pmx4puo4pya4pyb4pyc4pyd4pye4pyf4pyg6pqa6pqb7aC97bWA7aC97bWB7aC97bWC7aC97bWG7aC97bWH7aC97bWI7aC97b6h7aC97b6i7aC97b6j7aC97b6k7aC97b6l7aC97b6m7aC97b6nXSA/ID9bMV18WytdID8gP1vvvJHtoLXtv4/toLXtv5ntoLXtv6PtoLXtv63toLXtv7fikojik7XinbbinoDinortoLzttILfgeKRoOKRtF18W+KUvOKVguKVi+WNgeKUv+KcmuKcmeKelcKxy5bhkKnigbrigoriiJPiiJTiipXiip7in7Tip7rip7viqIHiqITiqKLiqKPiqKTiqKXiqKbiqKfiqKjiqK3iqK7iqLniqbHiqbLirLLvuaLvvIvhm63igZzimKnimKjimKbimbDimbHim6jinJrinJvinJzinJ3inJ7inJ/inKDqmprqmpvtoL3ttYDtoL3ttYHtoL3ttYLtoL3ttYbtoL3ttYftoL3ttYjtoL3tvqHtoL3tvqLtoL3tvqPtoL3tvqTtoL3tvqXtoL3tvqbtoL3tvqddID8gP1vvvJHtoLXtv4/toLXtv5ntoLXtv6PtoLXtv63toLXtv7fikojik7XinbbinoDinortoLzttILfgeKRoOKRtF0p"), 'g');
 
-
+const TIMESTAMP_REGEX = new RegExp('/watch\\?v=[0-9A-Za-z_-]{11}&amp;t=\\d+', 'g');
 
 const SCAM_AUTHOR_COMBOS = [
     ['what', 'app', '~appen', '~status'],
@@ -90,6 +90,9 @@ const LINK_SPAM_PHRASES = [
     'last fight',
     'full clip',
     'here is the full video',
+    'here is the full clip explain',
+    'link to the clip : thank me later',
+    'this is the clip u all looking for',
     'link to the clip thats going viral',
     'link to the clip explains the solution to bots',
     'link to the clip part 2',
@@ -124,7 +127,10 @@ function comboDetect(text, combinations) {
     }
 }
 
-function rule_detect(authorName, commentText) {
+function rule_detect(comment) {
+    let authorName = comment.data.author_name
+    let commentText = comment.data.text
+
     authorName = replaceWhitespaceWithSpaces(authorName);
 
     // TODO remove unicode characters
@@ -156,8 +162,6 @@ function rule_detect(authorName, commentText) {
     if (comboDetect([normalizedUsername, normalizedText], SCAM_NAME_TEXT_COMBOS))
         return COMMENT_LABEL.SCAM;
 
-    if (containsLinkSpam(normalizedText))
-        return COMMENT_LABEL.LINK_SPAM;
 
     if (containsAny(normalizedText, KNOWN_SPAM))
         return COMMENT_LABEL.OTHER_SPAM;
@@ -170,8 +174,16 @@ function rule_detect(authorName, commentText) {
     if (combined.match(PHONE_NUM_REGEX))
         return COMMENT_LABEL.SCAM;
 
+    if (containsLinkSpam(normalizedText))
+        return COMMENT_LABEL.LINK_SPAM;
     if (isValidUrl(commentText))
         return COMMENT_LABEL.LINK_ONLY;
+
+    // check if it contains a *clickable* URL
+    let link = comment.querySelector('#content-text > a.yt-simple-endpoint');
+    if (link && !(link.href.match(TIMESTAMP_REGEX))) {
+        return COMMENT_LABEL.LINK_CONTAINS;
+    }
 
     return COMMENT_LABEL.VALID
 }

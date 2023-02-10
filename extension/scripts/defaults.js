@@ -15,8 +15,8 @@ const DEFAULT_OPTIONS = {
     // 3. LINKS
     "rules-enabled-links": true,
     "rules-links-spam": true,
-    "rules-links-contains": false,
     "rules-links-only": false,
+    "rules-links-contains": false,
 
     // 4. SELF_PROMO
     "rules-enabled-selfpromo": false,
