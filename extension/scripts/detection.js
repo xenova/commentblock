@@ -54,6 +54,7 @@ const SCAM_AUTHOR_COMBOS = [
     ['recommend', ':point_right:'],
     ['trade with', ':point_right:'],
     ['earn', 'with', ':point_right:'],
+    ['reach ', 'on', 'gmail', 'com'],
 
     ['technopawns', 'com'],
     ['jinxhacks', 'com'],
@@ -74,7 +75,7 @@ const SCAM_NAME_TEXT_COMBOS = [
 
     [['contact'], ['thank you']],
     [['com'], ['you deserve', ':point_up:', 'recommend']],
-    [['via ig'], ['when i met ', ':up_arrow:', 'thank you']],
+    [['via ig'], ['when i met ', ':arrow_up:', 'thank you']],
 ]
 
 const LINK_SPAM_DOMAINS = new RegExp('youtu\\.?be(\\.com)?/', 'g')
