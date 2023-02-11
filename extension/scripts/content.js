@@ -17,37 +17,29 @@ const LABEL_RULES_MAPPING = {
 
 const COMMENT_TAG = 'YTD-COMMENT-RENDERER';
 const COMMENT_THREAD_TAG = 'YTD-COMMENT-THREAD-RENDERER';
+const COMMENT_TEXT = 'yt-formatted-string#content-text.ytd-comment-renderer';
 
 (() => {
-    // YTD-COMMENTS
-    // YTD-COMMENTS-HEADER-RENDERER
-    // YTD-COMMENT-SIMPLEBOX-RENDERER
-    // 
-    // YTD-COMMENT-REPLIES-RENDERER
-    // YTD-COMMENT-RENDERER
-
 
     // TODO allow user to select what to remove
 
     // observe changes on the page, comments are loaded separately so we need this to wait for them
     let observer = new MutationObserver((mutations) => {
         mutations.forEach(async (mutation) => {
-            // A child node has been added or removed.
-            if (!mutation.addedNodes) return;
+            // A child node has been added.
+            if (mutation.addedNodes.length === 0) return;
 
-            if (mutation.target.tagName === COMMENT_TAG) {
-                // When clicking show replies
-                processComment(mutation.target);
-            } else {
-                // When loading for the first time, scrolling, or browsing
-                // NOTE: (mutation.target.tagName === threadTag) is not enough
-                // since when browsing on YouTube, this doesn't get added again.
-                // Instead, we look for all comment renderers in the mutated object.
+            // For optimisation purposes, YouTube doesn't remove-then-insert new comments.
+            // Instead, they replace content of existing elmenets on the page.
+            // For this reason, we have to listen for changes to the actual text content
+            // of the comment, then crawl back up to the actual comment element.
+            // This is especially needed when sorting by recent
 
-                for (let comment of mutation.target.getElementsByTagName(COMMENT_TAG)) {
-                    processComment(comment);
-                }
-            }
+            if (!mutation.target.matches(COMMENT_TEXT)) return;
+
+            let comment = mutation.target.closest(COMMENT_TAG);
+            if (comment === null) return;
+            processComment(comment);
 
         })
     });
@@ -60,23 +52,24 @@ const COMMENT_THREAD_TAG = 'YTD-COMMENT-THREAD-RENDERER';
     });
 })();
 
+let PREDICTION_CACHE = {};
+
 async function processComment(comment) {
-    if (comment.hasAttribute('processed')) return;
-    comment.setAttribute('processed', '')
 
     let commentURL = new URL(comment.querySelector('.published-time-text > a').href)
     let commentID = commentURL.searchParams.get('lc')
+
     // if (commentID !== '') return;
 
-    // // TODO add option to not use cache
-    // if (commentPredictions[commentID]) {
-    //     if (commentPredictions[commentID] !== 'PROCESSING') {
-    //         action(comment, commentPredictions[commentID]); // Re-run action
-    //     } else {
-    //         // Prediction is still running elsewhere, and will be updated there, so we ignore here.
-    //     }
-    //     return; // Either way, do not run prediction again
-    // }
+    if (PREDICTION_CACHE[commentID]) {
+        if (PREDICTION_CACHE[commentID] !== 'PROCESSING') {
+            action(comment, PREDICTION_CACHE[commentID]); // Re-run action
+        } else {
+            // Prediction is still running elsewhere, and will be updated there, so we ignore here.
+        }
+        return; // Either way, do not run prediction again
+    }
+    PREDICTION_CACHE[commentID] = 'PROCESSING';
 
     let authorData = comment.querySelector('#author-text');
     let authorName = authorData.innerText;
@@ -91,6 +84,8 @@ async function processComment(comment) {
     }
 
     let prediction = await makePrediction(comment)
+    PREDICTION_CACHE[commentID] = prediction;
+
     action(comment, prediction);
 }
 
@@ -110,6 +105,12 @@ function extractTextFromElement(element) {
     return text;
 }
 
+function show(element) {
+    element.style.display = 'block';
+}
+function hide(element) {
+    element.style.display = 'none';
+}
 async function action(comment, prediction) {
 
     // Check if the predicted category is enabled
@@ -121,35 +122,46 @@ async function action(comment, prediction) {
         categoryEnabled = await getSetting(rules);
     }
 
-    if (!categoryEnabled) return; // Do nothing
+    if (categoryEnabled) {
 
-    // Now, decide what action to perform
-    let action = await getSetting('action');
-    if (action === 'remove') {
-        if (comment.parentElement.tagName === COMMENT_THREAD_TAG) {
-            // Is a top-level comment, so we delete the whole thread
-            // TODO add option for this
-            comment.parentElement.remove();
 
-            // TODO make sure to remove continuation spinner
-            // since it sometimes remains on the page
+        // Now, decide what action to perform
+        let action = await getSetting('action');
+        if (action === 'remove') {
+            if (comment.parentElement.tagName === COMMENT_THREAD_TAG) {
+                // Is a top-level comment, so we delete the whole thread
+                // TODO add option for this
+                hide(comment.parentElement);
+            } else {
+                // Is a reply, so we just delete the reply
+                hide(comment);
+
+                // TODO if it is the only reply, remove the "1 reply" text
+            }
+
+        } else if (action === 'blur') {
+            // TODO improve blurring
+            let overlay = document.createElement('div');
+            overlay.className = 'blurred-comment-overlay';
+
+            comment.append(overlay);
+
         } else {
-            // Is a reply, so we just delete the reply
-            comment.remove();
-
-            // TODO if it is the only reply, remove the "1 reply" text
+            console.log(`Unknown action: ${action}`)
+        }
+    } else {
+        // Reset
+        if (comment.parentElement.tagName === COMMENT_THREAD_TAG) {
+            show(comment.parentElement);
+        } else {
+            show(comment);
         }
 
-    } else if (action === 'blur') {
-        // TODO improve blurring
-        let overlay = document.createElement('div');
-        overlay.className = 'blurred-comment-overlay';
+        // Remove blurred overlay if present
+        let overlay = comment.querySelector('div.blurred-comment-overlay');
+        if (overlay) overlay.remove();
 
-        comment.append(overlay);
-        // comment.style.backgroundColor = 'red';
 
-    } else {
-        console.log(`Unknown action: ${action}`)
     }
 
 }
