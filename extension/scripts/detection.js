@@ -193,7 +193,7 @@ function rule_detect(comment) {
     if (comboDetect([normalizedUsername, normalizedText], SCAM_NAME_TEXT_COMBOS))
         return COMMENT_LABEL.SCAM;
 
-    if (comboDetect(normalised_text, KNOWN_SPAM_COMBOS))
+    if (comboDetect(normalizedText, KNOWN_SPAM_COMBOS))
         return COMMENT_LABEL.OTHER_SPAM;
 
     let combined = authorName + ' ' + commentText
