@@ -15,7 +15,7 @@
 }
 
 /* Ensure replies button is above blurry overlay */
-ytd-comment-thread-renderer #replies {
+ytd-button-renderer#less-replies.ytd-comment-replies-renderer,
+ytd-button-renderer#more-replies.ytd-comment-replies-renderer {
     z-index: 2;
-    position: relative;
 }
