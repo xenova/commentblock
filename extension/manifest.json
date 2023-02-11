@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CommentBlock",
-  "description": "Block spam/scam comments",
+  "description": "Block spam/scam YouTube comments",
   "version": "0.0.1",
   "permissions": [
     "storage"
