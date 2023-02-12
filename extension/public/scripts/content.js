@@ -78,9 +78,11 @@ let focusedComment = null;
 })();
 
 function addBlur(commentElement) {
+    if (isBlurred(commentElement)) return; // Do nothing if already blurred
+
     let overlay = document.createElement('div');
     overlay.className = BLURRED_COMMENT_OVERLAY_CLASS;
-    commentElement.append(overlay);
+    commentElement.querySelector('#body').append(overlay);
 }
 
 function getBlur(commentElement) {
