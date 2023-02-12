@@ -25,3 +25,7 @@ ytd-button-renderer#more-replies.ytd-comment-replies-renderer {
 div#action-menu.ytd-comment-renderer {
     z-index: 3;
 }
+
+ytd-menu-popup-renderer {
+    min-height: 88px;
+}
