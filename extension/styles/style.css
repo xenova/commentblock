@@ -20,3 +20,8 @@ ytd-button-renderer#less-replies.ytd-comment-replies-renderer,
 ytd-button-renderer#more-replies.ytd-comment-replies-renderer {
     z-index: 2;
 }
+
+/* Ensure action menu is above blurry overlay */
+div#action-menu.ytd-comment-renderer {
+    z-index: 3;
+}
