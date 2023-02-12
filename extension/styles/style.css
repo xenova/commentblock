@@ -1,7 +1,8 @@
 .blurred-comment-overlay {
+    height: calc(100% + 20px);
+    top: -20px;
+
     width: 104%;
-    height: 128%;
-    top: -15%;
     left: -2%;
     position: absolute;
     z-index: 1;
