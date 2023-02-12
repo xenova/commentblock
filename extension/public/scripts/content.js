@@ -266,12 +266,14 @@ async function makePrediction(comment) {
             return prediction;
         }
     }
-    let useML = await getSetting('use-ml');
-    if (useML) {
-        // Do another check to determine whether the rules missed it
-        let model = await ModelFactory.getInstance();
-        prediction = await model.predict(comment.data.author_name, comment.data.text);
-    }
+
+    // COMING SOON:
+    // let useML = await getSetting('use-ml');
+    // if (useML) {
+    //     // Do another check to determine whether the rules missed it
+    //     let model = await ModelFactory.getInstance();
+    //     prediction = await model.predict(comment.data.author_name, comment.data.text);
+    // }
 
     return prediction;
 
