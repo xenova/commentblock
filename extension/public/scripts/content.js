@@ -155,9 +155,11 @@ async function processComment(comment) {
 
     // Add event listener to options
     let actionButton = comment.querySelector('#action-menu.ytd-comment-renderer button')
-    actionButton.addEventListener('click', () => {
-        focusedComment = comment;
-    })
+    if(actionButton !== null){
+        actionButton.addEventListener('click', () => {
+            focusedComment = comment;
+        })
+    }
 
     // Set data attributes
     comment.data = {
