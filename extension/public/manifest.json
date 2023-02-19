@@ -9,9 +9,6 @@
   "host_permissions": [
     "*://*.youtube.com/*"
   ],
-  "background": {
-    "service_worker": "service-worker.js"
-  },
   "content_scripts": [
     {
       "css": [
