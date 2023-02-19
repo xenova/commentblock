@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CommentBlock",
   "description": "Block spam/scam YouTube comments",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "permissions": [
     "storage"
   ],
@@ -44,5 +44,11 @@
     "32": "icons/icon.png",
     "64": "icons/icon.png",
     "128": "icons/icon-128x128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-commentblock",
+      "strict_min_version": "42.0"
+    }
   }
 }
