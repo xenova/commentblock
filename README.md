@@ -1,11 +1,11 @@
 # CommentBlock
 
-CommentBlock is an open-source browser extension that automatically blocks spam/scam YouTube comments. Download from the [Chrome Webstore](https://chrome.google.com/webstore/detail/pnhkbjdbaioddkchelkolhbhcmlibjfb).
+CommentBlock is an open-source browser extension that automatically blocks spam/scam YouTube comments. Download for [Chrome/Chromium](https://chrome.google.com/webstore/detail/pnhkbjdbaioddkchelkolhbhcmlibjfb) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ytcommentblock/).
 
 ![CommentBlock](./extension/store/teaser.png)
 
 ## Examples
-Want to see the extension in action? Here are some videos to test the tool on:
+Want to see the extension in action? Here are some videos to test it on:
 
 1. [The Flash - No Way Home For The DCU?](https://www.youtube.com/watch?v=JG0QV40FMdQ) | The Critical Drinker &mdash; If you sort comments by new, you will see a ton of scam comments (mostly as replies). The extension does a very good job at detecting these.
 
