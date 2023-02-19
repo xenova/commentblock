@@ -47,8 +47,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "youtube-commentblock",
-      "strict_min_version": "42.0"
+      "id": "commentblock@xenova.com"
     }
   }
 }
