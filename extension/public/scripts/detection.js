@@ -63,10 +63,12 @@ const SCAM_AUTHOR_COMBOS = [
 ]
 
 const SCAM_TEXT_COMBOS = [
-    ['appreciat', 'recommend', ':point_up:'],
+    ['appreciat', 'recommend', ':point_up'],
 
     ['free vbucks', 'http'],
 ]
+
+const AUTHOR_HANDLE_REGEX = new RegExp("^@\\w+", 'g');
 
 const SCAM_NAME_TEXT_COMBOS = [
     // [author_items, text_items]
@@ -74,8 +76,12 @@ const SCAM_NAME_TEXT_COMBOS = [
     [['com'], ['name', 'above']],
 
     [['contact'], ['thank you']],
-    [['com'], ['you deserve', ':point_up:', 'recommend']],
+    [['com'], ['you deserve', ':point_up', 'recommend']],
     [['via ig'], ['when i met ', ':arrow_up:', 'thank you']],
+
+    // handles
+    // TODO make separate combo list
+    [[AUTHOR_HANDLE_REGEX, 'dmme'], [':point_up', ':gift:']],
 ]
 
 const LINK_SPAM_DOMAINS = new RegExp('youtu\\.?be(\\.com)?/', 'g')
@@ -89,6 +95,7 @@ let LINK_SPAM_COMBOS = [
     ['here is what happened'],
     ['here ', 'is ', 'full short'],
     ['here', 'the video that explains'],
+    ['here', 'the full vid', 'that explains'],
     ['last fight'],
     [new RegExp('here is the full (vid|clip)')],
 
